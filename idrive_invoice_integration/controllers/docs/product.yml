@@ -1,0 +1,125 @@
+openapi: 3.0.2
+
+sequence: 20
+
+paths:
+  /v1/api/idrive/product:
+    post:
+      summary: Create product
+      description: Create a new product
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idrive_product_id:
+                  type: string
+                  example: "4345dc54-0e03-4160-8816-b33d453d7c96"
+                name:
+                  type: string
+                  example: "Product 1"
+                list_price:
+                  type: number
+                  example: 100
+      responses:
+        201:
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 201
+                  message:
+                    type: string
+                    example: "Product created successfully"
+                  product:
+                    type: object  
+                    properties:
+                      name:
+                        type: string
+                        example: "Product 1"
+                      product_id:
+                        type: integer
+                        example: 1
+                      idrive_product_id:
+                        type: string
+                        example: "4345dc54-0e03-4160-8816-b33d453d7c96"
+                      list_price:
+                        type: number
+                        example: 100
+  /v1/api/idrive/products:
+    post:
+      summary: Create multiple products
+      description: Create multiple new products
+      tags:
+        - Product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      idrive_product_id:
+                        type: string
+                      name:
+                        type: string
+                      list_price:
+                        type: number
+                  example:
+                      - idrive_product_id: "4345dc54-0e03-4160-8816-b33d453d7c46"
+                        name: "Product 1"
+                        list_price: 100
+                      - idrive_product_id: "e71a54dc-7bd0-4c66-98be-8c57235aa531"
+                        name: "Product 2"
+                        list_price: 250
+                    
+      responses:
+        201:
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Product created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 201
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: "Product 1"
+                        product_id:
+                          type: integer
+                          example: 1
+                        idrive_product_id:
+                          type: string
+                          example: "4345dc54-0e03-4160-8816-b33d453d7c96"
+                        list_price:
+                          type: number
+                          example: 100

@@ -1,0 +1,129 @@
+openapi: 3.0.2
+
+sequence: 50
+
+paths:
+  /v1/api/idrive/check_or_create_invoice:
+    post:
+      summary: Check or create invoice
+      description: Checks if an invoice exists and creates it if it doesn't
+      tags:
+        - Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idrive_invoice_id:
+                  type: string
+                  example: "1234567890"
+                invoice_date:
+                  type: string
+                  example: "2025-01-01"
+                idrive_user_id:
+                  type: string
+                  example: "f5baa198-0623-4f32-9701-0337bac0d89d"
+                product_lines:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        required: true
+                        type: string
+                        example: "4345dc54-0e03-4160-8816-b33d453d7c96"
+                      quantity:
+                        required: true
+                        type: number
+                        example: 1
+                      discount_percentage:
+                        required: false
+                        type: number
+                        example: 10
+                      description:
+                        required: true
+                        type: string
+                        example: "Laptop"
+                      is_tax_included:
+                        required: true
+                        type: boolean
+                        example: true
+                      price:
+                        required: true
+                        type: number
+                        example: 100
+
+      responses:
+        "201":
+          description: Invoice created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: created
+                  message:
+                    type: string
+                    example: "Your invoice was created successfully"
+                  invoice_data:
+                    type: object
+                    properties:
+                      invoice_id:
+                        type: integer
+                        example: 1
+                      invoice_number:
+                        type: string
+                        example: "INV-001"
+                      invoice_date:
+                        type: string
+                        example: "2025-01-01"
+                      invoice_date_due:
+                        type: string
+                        example: "2025-01-01"
+                      delivery_date:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://portal.idrive.com/invoice/1234567890"
+        "200":
+          description: Invoice already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: exists
+                  message:
+                    type: string
+                    example: "IDrive invoice already exists"
+                  invoice_data:
+                    type: object
+                    properties:
+                      invoice_id:
+                        type: integer
+                        example: 1
+                      idrive_invoice_id:
+                        type: string
+                        example: "f5baa198-0623-4f32-9701-0337bac0d89d"
+                      invoice_number:
+                        type: string
+                        example: "INV-001"
+                      invoice_date:
+                        type: string
+                        example: "2025-01-01"
+                      invoice_date_due:
+                        type: string
+                        example: "2025-01-01"
+                      delivery_date:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://portal.cloudhouse.com/invoice/1234567890"

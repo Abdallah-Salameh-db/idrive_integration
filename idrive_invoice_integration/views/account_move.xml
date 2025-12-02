@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+  <record id="view_account_move_form" model="ir.ui.view">
+    <field name="name">idrive.invoice.integration.account.move.form</field>
+    <field name="model">account.move</field>
+    <field name="inherit_id" ref="account.view_move_form" />
+    <field name="arch" type="xml">
+      <xpath expr="//sheet//group[@id='header_right_group']" position="inside">
+        <field name="idrive_invoice_id" />
+        <field name="idrive_uuid_certificate" />
+        <field name="idrive_invoice_url" />
+      </xpath>
+    </field>
+  </record>
+</odoo>

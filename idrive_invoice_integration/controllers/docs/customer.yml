@@ -1,0 +1,198 @@
+openapi: 3.0.2
+
+sequence: 10
+
+paths:
+  /v1/api/idrive/customer:
+    post:
+      summary: Create customer
+      description: Create a new customer
+      tags:
+        - Customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                idrive_user_id:
+                  type: string
+                  example: "4345dc54-0e03-4160-8816-b33d453d7c96"
+                is_company:
+                  type: boolean
+                  example: true
+                name:
+                  type: string
+                  example: "Khalid Al-Riyadh"
+                email:
+                  type: string
+                  example: "khalid.alriyadh@example.com"
+                phone:
+                  type: string
+                  example: "+966555555555"       
+                address:
+                  type: object
+                  properties:
+                    street:
+                      type: string
+                    neighborhood:
+                      type: string
+                    city:
+                      type: string
+                    state_code:
+                      type: string
+                    zip:
+                      type: string
+                    building_number:
+                      type: string
+                    plot_id:
+                      type: string
+                  example:
+                    # Saudi Arabia
+                    street: "Al-Riyadh Street"
+                    neighborhood: "Al-Riyadh Neighborhood"
+                    city: "Abha"
+                    state_code: "AHB"
+                    zip: "10001"
+                    building_number: "123"
+                    plot_id: "1234567890"
+                tax_type:
+                  type: string
+                  example: "700"
+                tax_number:
+                  type: string
+                  example: "326512345678903"
+                cr_number:
+                  type: string
+                  example: "7086451875"
+
+      responses:
+       200:
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "IDrive customer already exists"
+                  status:
+                    type: string
+                    example: "Exist"
+                  customer_data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "1234567890"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "john.doe@example.com"
+                      phone:
+                        type: string
+                        example: "1234567890"
+                      address:
+                        type: object
+                        properties:
+                          street:
+                            type: string
+                            example: "Al-Riyadh Street"
+                          neighborhood:
+                            type: string
+                            example: "Al-Riyadh Neighborhood"
+                          city:
+                            type: string
+                            example: "Abha"
+                          zip:
+                            type: string
+                            example: "10001"
+                          state_code:
+                            type: string
+                            example: "AHB"
+                          building_number:
+                            type: string
+                            example: "123"
+                          plot_id:
+                            type: string
+                            example: "1234567890"
+                      tax_type:
+                        type: string
+                        example: "700"
+                      tax_number:
+                        type: string
+                        example: "312345678903"
+                      cr_number:
+                        type: string
+                        example: "7086451875"
+                  status_code:
+                    type: integer
+                    example: 200
+       201:
+          description: Customer created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Customer created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  customer_data:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: "1234567890"
+                      name:
+                        type: string
+                        example: "John Doe"
+                      email:
+                        type: string
+                        example: "john.doe@example.com"
+                      phone:
+                        type: string
+                        example: "1234567890"
+                      address:
+                        type: object
+                        properties:
+                          street:
+                            type: string
+                            example: "Al-Riyadh Street"
+                          neighborhood:
+                            type: string
+                            example: "Al-Riyadh Neighborhood"
+                          city:
+                            type: string
+                            example: "Abha"
+                          zip:
+                            type: string
+                            example: "10001"
+                          state_code:
+                            type: string
+                            example: "AHB"
+                          building_number:
+                            type: string
+                            example: "123"
+                          plot_id:
+                            type: string
+                            example: "1234567890"
+                      tax_type:
+                        type: string
+                        example: "700"
+                      tax_number:
+                        type: string
+                        example: "312345678903"
+                      cr_number:
+                        type: string
+                        example: "7086451875"
+                  status_code:
+                    type: integer
+                    example: 201

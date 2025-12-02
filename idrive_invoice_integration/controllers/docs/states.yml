@@ -1,0 +1,42 @@
+openapi: 3.0.0
+
+sequence: 100
+
+paths:
+  /v1/api/idrive/states:
+    get:
+      summary: Get states
+      description: Get states for Saudi Arabia
+      tags:
+        - States
+      responses:
+        "200":
+          description: States retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: States retrieved successfully
+                  status:
+                    type: string
+                    example: success
+                  status_code:
+                    type: integer
+                    example: 200
+                  states:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: "Riyadh"
+                        code:
+                          type: string
+                          example: "R"
