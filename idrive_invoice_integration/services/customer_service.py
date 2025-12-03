@@ -53,21 +53,19 @@ def check_or_create_customer(request):
             }
             return data_response(res, 400)
         address = data.get("address")
-        required_address_fields = [
-            "street",
-            "neighborhood",
-            "city",
-            "state_code",
-            "zip",
-        ]
+        required_address_fields = []
         if is_company == True:
-            required_address_fields.extend(
-                [
-                    "building_number",
-                    "plot_id",
-                ]
-            )
-        if not all(field in address for field in required_address_fields):
+            required_address_fields = [
+                "building_number",
+                "plot_id",
+                "street",
+                "neighborhood",
+                "city",
+                "state_code",
+                "zip",
+            ]
+
+        if address and not all(field in address for field in required_address_fields):
             missing_address_fields = [
                 field for field in required_address_fields if field not in address
             ]
@@ -206,18 +204,26 @@ def check_or_create_customer(request):
             "name": name,
             "email": email,
             "phone": phone,
-            "street": address.get("street"),
-            "street2": address.get("neighborhood"),
-            "city": address.get("city"),
-            "zip": address.get("zip"),
+            "street": address.get("street") if address.get("street") else "",
+            "street2": (
+                address.get("neighborhood") if address.get("neighborhood") else ""
+            ),
+            "city": address.get("city") if address.get("city") else "",
+            "zip": address.get("zip") if address.get("zip") else "",
             "country_id": country.id,
             "state_id": state.id if state else None,
         }
         if is_company == True:
             customer_data.update(
                 {
-                    "l10n_sa_edi_building_number": address.get("building_number"),
-                    "l10n_sa_edi_plot_identification": address.get("plot_id"),
+                    "l10n_sa_edi_building_number": (
+                        address.get("building_number")
+                        if address.get("building_number")
+                        else ""
+                    ),
+                    "l10n_sa_edi_plot_identification": (
+                        address.get("plot_id") if address.get("plot_id") else ""
+                    ),
                     "l10n_sa_additional_identification_scheme": tax_type,
                     "l10n_sa_additional_identification_number": cr_number,
                     "vat": tax_number,
