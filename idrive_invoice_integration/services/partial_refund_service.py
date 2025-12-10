@@ -172,24 +172,22 @@ def check_or_create_partial_refund_transaction(request):
 
     refund_details = {
         "refund_id": reversal_move.id,
+        "idrive_refund_id": reversal_move.idrive_invoice_id,
         "refund_number": reversal_move.name,  # Serial number
+        "refund_date": str(reversal_move.invoice_date),
         "refund_date_due": (
             str(reversal_move.invoice_date_due)
             if reversal_move.invoice_date_due
             else None
         ),
-        # Convert to string
-        "delivery_date": (
-            str(reversal_move.delivery_date) if reversal_move.delivery_date else None
-        ),
         "link": f"{reversal_move.ch_custom_portal_url}",
     }
     _logger.info("Refund details fetched successfully")
     res = {
-        "message": "Refund processed successfully",
-        "refund": refund_details,
-        "status_code": 200,
+        "message": "Your refund was created successfully",
+        "refund_data": refund_details,
+        "status_code": 201,
         "status": "Created",
     }
 
-    return data_response(res, 200)
+    return data_response(res, 201)

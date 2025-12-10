@@ -29,15 +29,15 @@ paths:
                   type: string
                 refund_reason:
                   type: string
-                example:
-                  idrive_refund_id: "UUID"
-                  idrive_invoice_id: "UUID"
-                  refund_date: "2025-01-01"
-                  refund_reason: "Refund reason"
+              example:
+                idrive_refund_id: "UUID"
+                idrive_invoice_id: "UUID"
+                refund_date: "2025-01-01"
+                refund_reason: "Refund reason"
 
       responses:
         200:
-          description: Refund transaction created successfully
+          description: Refund transaction Already Exists
           content:
             application/json:
               schema:
@@ -45,14 +45,14 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Refund created successfully"
+                    example: "IDrive refund already exists"
                   status:
                     type: string
-                    example: "Created"
+                    example: "Exists"
                   status_code:
                     type: integer
                     example: 200
-                  refund:
+                  refund_data:
                     type: object
                     properties:
                       refund_id:
@@ -60,10 +60,10 @@ paths:
                         example: 1
                       idrive_refund_id:
                         type: string
-                        example: "1234567890"
+                        example: "UUID"
                       refund_number:
                         type: string
-                        example: "1234567890"
+                        example: "INV-001"
                       refund_date:
                         type: string
                         example: "2025-01-01"
@@ -72,12 +72,46 @@ paths:
                         example: "2025-01-01"
                       link:
                         type: string
-                        example: "https://www.google.com"
+                        example: "https://Domain.com/refund/UUID"
+        201:
+          description: Refund transaction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Your refund was created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 201
+                  refund_data:
+                    type: object
+                    properties:
+                      refund_id:
+                        type: integer
+                        example: 1
+                      idrive_refund_id:
+                        type: string
+                        example: "UUID"
+                      refund_number:
+                        type: string
+                        example: "INV-001"
+                      refund_date:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://Domain.com/refund/UUID"
 
   /v1/api/idrive/partial_refund_transaction:
     post:
-      summary: Check or create refund
-      description: Checks if a refund exists and creates it if it doesn't
+      summary: Check or create partial refund
+      description: Checks if a partial refund transaction exists and creates it if it doesn't
       tags:
         - Refund
       requestBody:
@@ -146,7 +180,7 @@ paths:
 
       responses:
         200:
-          description: Refund created successfully
+          description: IDrive refund already exists
           content:
             application/json:
               schema:
@@ -154,14 +188,14 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Refund created successfully"
+                    example: "IDrive refund already exists"
                   status:
                     type: string
-                    example: "Created"
+                    example: "Exists"
                   status_code:
                     type: integer
                     example: 200
-                  refund:
+                  refund_data:
                     type: object
                     properties:
                       refund_id:
@@ -169,10 +203,10 @@ paths:
                         example: 1
                       idrive_refund_id:
                         type: string
-                        example: "1234567890"
+                        example: "UUID"
                       refund_number:
                         type: string
-                        example: "1234567890"
+                        example: "INV-001"
                       refund_date:
                         type: string
                         example: "2025-01-01"
@@ -181,4 +215,41 @@ paths:
                         example: "2025-01-01"
                       link:
                         type: string
-                        example: "https://www.google.com"
+                        example: "https://Domain.com/refund/UUID"
+        201:
+          description: IDrive refund created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Your refund was created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 201
+                  refund_data:
+                    type: object
+                    properties:
+                      refund_id:
+                        type: integer
+                        example: 1
+                      idrive_refund_id:
+                        type: string
+                        example: "UUID"
+                      refund_number:
+                        type: string
+                        example: "INV-001"
+                      refund_date:
+                        type: string
+                        example: "2025-01-01"
+                      refund_date_due:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://Domain.com/refund/UUID"
