@@ -3,7 +3,78 @@ openapi: 3.0.2
 sequence: 30
 
 paths:
-  /v1/api/idrive/check_or_create_refund:
+  /v1/api/idrive/refund_transaction:
+    post:
+      summary: Check or create refund
+      description: Checks if a refund transaction exists and creates it if it doesn't
+      tags:
+        - Refund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - idrive_refund_id
+                - idrive_invoice_id
+                - refund_date
+                - refund_reason
+              properties:
+                idrive_refund_id:
+                  type: string
+                idrive_invoice_id:
+                  type: string  
+                refund_date:
+                  type: string
+                refund_reason:
+                  type: string
+                example:
+                  idrive_refund_id: "UUID"
+                  idrive_invoice_id: "UUID"
+                  refund_date: "2025-01-01"
+                  refund_reason: "Refund reason"
+
+      responses:
+        200:
+          description: Refund transaction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Refund created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 200
+                  refund:
+                    type: object
+                    properties:
+                      refund_id:
+                        type: integer
+                        example: 1
+                      idrive_refund_id:
+                        type: string
+                        example: "1234567890"
+                      refund_number:
+                        type: string
+                        example: "1234567890"
+                      refund_date:
+                        type: string
+                        example: "2025-01-01"
+                      refund_date_due:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://www.google.com"
+
+  /v1/api/idrive/partial_refund_transaction:
     post:
       summary: Check or create refund
       description: Checks if a refund exists and creates it if it doesn't
