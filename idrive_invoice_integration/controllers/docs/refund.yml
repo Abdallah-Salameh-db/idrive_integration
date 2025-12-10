@@ -1,0 +1,113 @@
+openapi: 3.0.2
+
+sequence: 30
+
+paths:
+  /v1/api/idrive/check_or_create_refund:
+    post:
+      summary: Check or create refund
+      description: Checks if a refund exists and creates it if it doesn't
+      tags:
+        - Refund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - idrive_refund_id
+                - idrive_invoice_id
+                - refund_date
+                - refund_reason
+                - product_lines
+                  - idrive_product_id
+                  - quantity
+                  - price_unit
+                  - description
+              properties:
+                idrive_refund_id:
+                  type: string
+                idrive_invoice_id:
+                  type: string  
+                refund_date:
+                  type: string
+                refund_reason:
+                  type: string
+                product_lines:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - idrive_product_id
+                      - quantity
+                      - price_unit
+                      - description
+                    properties:
+                      idrive_product_id:
+                        type: string
+                      quantity:
+                        type: number
+                      price_unit:
+                        type: number
+                      description:
+                        type: string
+                example:
+                  idrive_refund_id: "UUID"
+                  idrive_invoice_id: "UUID"
+                  refund_date: "2025-01-01"
+                  refund_reason: "Refund reason"
+                  product_lines:
+                    - idrive_product_id: "UUID"
+                      quantity: 1
+                      price_unit: 100
+                      description: "Product 1"
+                    - idrive_product_id: "UUID"
+                      quantity: 1
+                      price_unit: 100
+                      description: "Product 2"
+                    - idrive_product_id: "UUID"
+                      quantity: 1
+                      price_unit: 100
+                      description: "Product 3"
+
+
+
+      responses:
+        200:
+          description: Refund created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Refund created successfully"
+                  status:
+                    type: string
+                    example: "Created"
+                  status_code:
+                    type: integer
+                    example: 200
+                  refund:
+                    type: object
+                    properties:
+                      refund_id:
+                        type: integer
+                        example: 1
+                      idrive_refund_id:
+                        type: string
+                        example: "1234567890"
+                      refund_number:
+                        type: string
+                        example: "1234567890"
+                      refund_date:
+                        type: string
+                        example: "2025-01-01"
+                      refund_date_due:
+                        type: string
+                        example: "2025-01-01"
+                      link:
+                        type: string
+                        example: "https://www.google.com"

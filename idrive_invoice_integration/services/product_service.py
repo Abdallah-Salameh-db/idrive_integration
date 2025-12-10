@@ -1,8 +1,6 @@
-from odoo import api, fields, models, _
 import json
 from ..utils import data_response
 
-from odoo.api import SUPERUSER_ID
 
 import logging
 
@@ -16,7 +14,7 @@ def check_or_create_product(request):
     try:
         data = json.loads(request.httprequest.data)
 
-        env = api.Environment(request.cr, SUPERUSER_ID, {"active_test": False})
+        env = request.env
         required_fields = ["idrive_product_id", "name", "list_price"]
         if not all(field in data for field in required_fields):
             _logger.error("Missing required fields for product creation")
@@ -61,8 +59,17 @@ def check_or_create_product(request):
         product = env["product.template"].search(
             [("idrive_product_id", "=", idrive_product_id)], limit=1
         )
-
-        if not product:
+        if product:
+            # Update the product if it already exists
+            product.write(
+                {
+                    "name": name,
+                    "list_price": list_price,
+                    "taxes_id": [(6, 0, [tax.id])] if tax else [],
+                }
+            )
+        else:
+            # Create a new product if it does not already exist
             product = env["product.template"].create(
                 {
                     "name": name,
@@ -111,7 +118,7 @@ def check_or_create_multiple_products(request):
             _logger.error("No products data provided")
             return data_response("No products data provided", 400)
 
-        env = api.Environment(request.cr, SUPERUSER_ID, {"active_test": False})
+        env = request.env
         required_fields = ["idrive_product_id", "name", "list_price"]
         for product_data in post_products:
             _logger.info(f"Product data: {product_data}")
@@ -165,7 +172,25 @@ def check_or_create_multiple_products(request):
                 [("idrive_product_id", "=", idrive_product_id)], limit=1
             )
 
-            if not existing_product:
+            if existing_product:
+                # Update the product if it already exists
+                existing_product.write(
+                    {
+                        "name": name,
+                        "list_price": list_price,
+                        "taxes_id": [(6, 0, [tax.id])] if tax else [],
+                    }
+                )
+                products.append(
+                    {
+                        "name": existing_product.name,
+                        "product_id": existing_product.id,
+                        "idrive_product_id": existing_product.idrive_product_id,
+                        "list_price": existing_product.list_price,
+                    }
+                )
+            else:
+                # Create a new product if it does not already exist
                 _logger.info(
                     f"Creating new product with idrive product id: {idrive_product_id}"
                 )
@@ -188,18 +213,7 @@ def check_or_create_multiple_products(request):
                         "list_price": new_product.list_price,
                     }
                 )
-            else:
-                _logger.info(
-                    f"Existing product found with idrive product id: {idrive_product_id}"
-                )
-                products.append(
-                    {
-                        "name": existing_product.name,
-                        "product_id": existing_product.id,
-                        "idrive_product_id": existing_product.idrive_product_id,
-                        "list_price": existing_product.list_price,
-                    }
-                )
+
         _logger.info(f"Products: {products}")
         res = {
             "message": "Products processed successfully",

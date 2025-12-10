@@ -8,7 +8,7 @@ class IDriveInvoice(models.Model):
     _inherit = "account.move"
     _description = "IDrive Invoice"
 
-    idrive_invoice_id = fields.Char(string="IDrive Invoice")
+    idrive_invoice_id = fields.Char(string="IDrive ID")
     idrive_uuid_certificate = fields.Char(string="IDrive UUID Certificate")
     idrive_invoice_url = fields.Char(string="IDrive Invoice URL")
 

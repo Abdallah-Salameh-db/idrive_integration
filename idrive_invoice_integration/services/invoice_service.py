@@ -165,6 +165,7 @@ def check_or_create_invoice(request):
         description = line.get("description")
         is_tax_included = line.get("is_tax_included")
         discount = line.get("discount_percentage", 0.0)
+        discount_type = line.get("discount_percentage", 0.0) # percentage or fixed
         # Add the 'name' field with the description from the request
         lines.append(
             (

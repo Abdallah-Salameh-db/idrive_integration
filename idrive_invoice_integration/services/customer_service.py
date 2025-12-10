@@ -1,8 +1,6 @@
-from odoo import api, fields, models, _
 import json
 from ..utils import data_response
 
-from odoo.api import SUPERUSER_ID
 
 import logging
 import re
@@ -80,36 +78,6 @@ def check_or_create_customer(request):
             return data_response(res, 400)
 
         idrive_user_id = data.get("idrive_user_id")
-        existing_customer = request.env["res.partner"].search(
-            [("idrive_user_id", "=", idrive_user_id)], limit=1
-        )
-        if existing_customer:
-            _logger.info("IDrive customer already exists")
-            return_customer_data = {
-                "id": existing_customer.id,
-                "name": existing_customer.name,
-                "email": existing_customer.email,
-                "phone": existing_customer.phone,
-                "address": {
-                    "street": existing_customer.street,
-                    "neighborhood": existing_customer.street2,
-                    "city": existing_customer.city,
-                    "zip": existing_customer.zip,
-                    "state_code": existing_customer.state_id.code,
-                    "building_number": existing_customer.l10n_sa_edi_building_number,
-                    "plot_id": existing_customer.l10n_sa_edi_plot_identification,
-                },
-                "tax_type": existing_customer.l10n_sa_additional_identification_scheme,
-                "tax_number": existing_customer.vat,
-                "cr_number": existing_customer.l10n_sa_additional_identification_number,
-            }
-            res = {
-                "message": "IDrive customer already exists",
-                "status": "Exist",
-                "customer_data": return_customer_data,
-                "status_code": 200,
-            }
-            return data_response(res, 200)
 
         name = data.get("name")
         email = data.get("email")
@@ -229,32 +197,46 @@ def check_or_create_customer(request):
                     "vat": tax_number,
                 }
             )
-        new_customer = request.env["res.partner"].create(customer_data)
+        customer = request.env["res.partner"].search(
+            [("idrive_user_id", "=", idrive_user_id)], limit=1
+        )
+        if customer:
+            _logger.info("IDrive customer already exists")
+            customer.write(customer_data)
+            msg = "IDrive customer already exists"
+            status = "Exist"
+            status_code = 200
+        else:
+            customer = request.env["res.partner"].create(customer_data)
+            msg = "Customer created successfully"
+            status = "Created"
+            status_code = 201
+
         return_customer_data = {
-            "id": new_customer.id,
-            "name": new_customer.name,
-            "email": new_customer.email,
-            "phone": new_customer.phone,
+            "id": customer.id,
+            "name": customer.name,
+            "email": customer.email,
+            "phone": customer.phone,
             "address": {
-                "street": new_customer.street,
-                "neighborhood": new_customer.street2,
-                "city": new_customer.city,
-                "zip": new_customer.zip,
-                "state_code": new_customer.state_id.code,
-                "building_number": new_customer.l10n_sa_edi_building_number,
-                "plot_id": new_customer.l10n_sa_edi_plot_identification,
+                "street": customer.street,
+                "neighborhood": customer.street2,
+                "city": customer.city,
+                "zip": customer.zip,
+                "state_code": customer.state_id.code,
+                "building_number": customer.l10n_sa_edi_building_number,
+                "plot_id": customer.l10n_sa_edi_plot_identification,
             },
-            "tax_type": new_customer.l10n_sa_additional_identification_scheme,
-            "tax_number": new_customer.vat,
-            "cr_number": new_customer.l10n_sa_additional_identification_number,
+            "tax_type": customer.l10n_sa_additional_identification_scheme,
+            "tax_number": customer.vat,
+            "cr_number": customer.l10n_sa_additional_identification_number,
         }
         res = {
-            "message": "Customer created successfully",
-            "status": "Created",
+            "message": msg,
+            "status": status,
             "customer_data": return_customer_data,
-            "status_code": 201,
+            "status_code": status_code,
         }
-        return data_response(res, 201)
+        return data_response(res, status_code)
 
     except Exception as e:
         _logger.error(f"Error: {e}")
