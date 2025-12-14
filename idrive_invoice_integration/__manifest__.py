@@ -9,7 +9,7 @@
     "author": "Abdallah Salameh",
     "category": "Accounting",
     "version": "1.0",
-    "depends": ["base", "account", "product", "base", "mail_plugin"],
+    "depends": ["base", "account", "product", "mail_plugin"],
     "data": [
         "views/account_move.xml",
         "views/product_template.xml",
