@@ -14,6 +14,7 @@
         "views/account_move.xml",
         "views/product_template.xml",
         "views/res_partner.xml",
+        "views/config_settings.xml",
     ],
     "demo": [],
     "installable": True,
