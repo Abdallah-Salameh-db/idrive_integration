@@ -25,6 +25,10 @@ paths:
                 idrive_user_id:
                   type: string
                   example: "f5baa198-0623-4f32-9701-0337bac0d89d"
+                discount_coupon:
+                  description: Discount coupon for total invoice amount if available
+                  type: number
+                  example: 10.0
                 product_lines:
                   type: array
                   items:
@@ -38,7 +42,12 @@ paths:
                         required: true
                         type: number
                         example: 1
-                      discount_percentage:
+                      discount_type:
+                        description: Discount type (percentage or fixed)
+                        required: false
+                        type: string
+                        example: "percentage"
+                      discount_value:
                         required: false
                         type: number
                         example: 10
@@ -51,6 +60,7 @@ paths:
                         type: boolean
                         example: true
                       price:
+                        description: Price of the product per unit without discount or tax 
                         required: true
                         type: number
                         example: 100

@@ -1,0 +1,18 @@
+<odoo>
+  <record id="view_res_config_settings_inherit" model="ir.ui.view">
+    <field name="name">res.config.settings.inherit</field>
+    <field name="model">res.config.settings</field>
+    <field name="inherit_id" ref="account.res_config_settings_view_form" />
+    <field name="arch" type="xml">
+
+      <xpath expr="//field" position="after">
+
+        <div id="global_discount_settings">
+          <block title="Global Discount product" name="global_discount_setting_container">
+            <field name="global_discount_product_id" string="Discount Product" />
+          </block>
+        </div>
+      </xpath>
+    </field>
+  </record>
+</odoo>

@@ -51,6 +51,7 @@ def check_or_create_invoice(request):
     invoice_date = data.get("invoice_date")
     idrive_invoice_id = data.get("idrive_invoice_id")
     idrive_user_id = data.get("idrive_user_id")
+    discount_coupon = data.get("discount_coupon", 0.0)
     product_lines = data.get("product_lines")
     # Validate and fetch journal
     journal = env["account.journal"].browse(9)
@@ -145,6 +146,7 @@ def check_or_create_invoice(request):
         )
 
     lines = []
+    included_discount = False
     for line in product_lines:
         product = env["product.template"].search(
             [("idrive_product_id", "=", line["product_id"])]
@@ -164,8 +166,32 @@ def check_or_create_invoice(request):
         quantity = line.get("quantity")
         description = line.get("description")
         is_tax_included = line.get("is_tax_included")
-        discount = line.get("discount_percentage", 0.0)
-        discount_type = line.get("discount_percentage", 0.0) # percentage or fixed
+        discount_type = line.get("discount_type")  # percentage or fixed
+        discount_value = line.get("discount_value", 0.0)
+        if discount_type and discount_type not in ["percentage", "fixed"]:
+            _logger.error(f"Invalid discount type: {discount_type}")
+            return data_response(
+                {
+                    "message": f"Invalid discount type: {discount_type}",
+                    "status": "BadRequest",
+                    "status_code": 400,
+                },
+                400,
+            )
+        if discount_type and discount_value <= 0:
+            _logger.error(
+                f"Invalid discount value: {discount_value} must be greater than 0"
+            )
+            return data_response(
+                {
+                    "message": f"Invalid discount value: {discount_value} must be greater than 0",
+                    "status": "BadRequest",
+                    "status_code": 400,
+                },
+                400,
+            )
+        if discount_type and discount_type == "fixed":
+            included_discount = True
         # Add the 'name' field with the description from the request
         lines.append(
             (
@@ -176,12 +202,75 @@ def check_or_create_invoice(request):
                     "name": description,
                     "quantity": quantity,
                     "price_unit": price_unit,
-                    "discount": discount,
+                    "discount": (
+                        discount_value if discount_type == "percentage" else 0.0
+                    ),
                     "tax_ids": ([(6, 0, [tax.id])] if is_tax_included else []),
                 },
             )
         )
 
+    # Add discount coupon if available and discounts for each line
+    if discount_coupon:
+        if discount_coupon < 0:
+            return data_response(
+                {
+                    "message": f"Invalid discount coupon amount: {discount_coupon}, it must be greater than 0",
+                    "status": "BadRequest",
+                    "status_code": 400,
+                },
+                400,
+            )
+    if discount_coupon and discount_coupon > 0:
+        included_discount = True
+    if included_discount:
+        discount_product_id = env["res.config.parameter"].get_param(
+            "idrive_invoice_integration.global_discount_product"
+        )
+        if not discount_product_id or not discount_product_id.exists():
+            return data_response(
+                {
+                    "message": "There are no global discount product to handling discount amount in odoo system",
+                    "status": "InternalServerError",
+                    "status_code": 500,
+                },
+                500,
+            )
+        if discount_coupon:
+            lines.append(
+                (
+                    0,
+                    0,
+                    {
+                        "product_id": discount_product_id.id,
+                        "quantity": 1,
+                        "price_unit": discount_coupon,
+                        "discount": 0.0,
+                        "name": "Discount Coupon",
+                        "tax_ids": [(6, 0, [tax.id])],
+                    },
+                )
+            )
+        for line in product_lines:
+            if line.get("discount_type") and line.get("discount_type") == "fixed":
+                lines.append(
+                    (
+                        0,
+                        0,
+                        {
+                            "product_id": discount_product_id.id,
+                            "quantity": 1,
+                            "price_unit": line.get("discount_value"),
+                            "discount": 0.0,
+                            "name": f"خصم على المنتج {line.get("description")}",
+                            "tax_ids": (
+                                [(6, 0, [tax.id])]
+                                if line.get("is_tax_included")
+                                else []
+                            ),
+                        },
+                    )
+                )
     # Invoice creation values
     invoice_values = {
         "move_type": "out_invoice",
