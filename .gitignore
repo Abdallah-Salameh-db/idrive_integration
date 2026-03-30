@@ -1,4 +1,7 @@
-# Ignore all __pycache__ directories and .pyc files
 **/__pycache__/
 __pycache__/
 *.pyc
+.vscode/
+.idea/
+pyrightconfig.json
+scripts
