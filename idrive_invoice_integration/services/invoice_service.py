@@ -224,7 +224,7 @@ def check_or_create_invoice(request):
     if discount_coupon and discount_coupon > 0:
         included_discount = True
     if included_discount:
-        discount_product_id = env["res.config.parameter"].get_param(
+        discount_product_id = env["res.config.settings"].get_param(
             "idrive_invoice_integration.global_discount_product"
         )
         if not discount_product_id or not discount_product_id.exists():
@@ -291,7 +291,7 @@ def check_or_create_invoice(request):
         invoice_values["delivery_date"] = invoice_date_due
 
     # Create the invoice
-    invoice = env["account.move"].create(invoice_values)
+    invoice = env["account.move"].create(invoice_values)  # type: ignore
 
     # Post the invoice
     invoice.action_post()
