@@ -54,7 +54,7 @@ def check_or_create_invoice(request):
     discount_coupon = data.get("discount_coupon", 0.0)
     product_lines = data.get("product_lines")
     # Validate and fetch journal
-    journal = env["account.journal"].browse(9)
+    journal = env["account.journal"].browse(478)
     if not journal.exists():
         _logger.error("Journal not found")
         return data_response("Journal not found", 404)
