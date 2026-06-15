@@ -46,7 +46,7 @@ def check_or_create_invoice(request):
             },
             400,
         )
-    env = api.Environment(request.cr, SUPERUSER_ID, {"active_test": False})
+    env = api.Environment(request.cr, request.uid, {"active_test": False})
 
     invoice_date = data.get("invoice_date")
     idrive_invoice_id = data.get("idrive_invoice_id")
@@ -54,7 +54,7 @@ def check_or_create_invoice(request):
     discount_coupon = data.get("discount_coupon", 0.0)
     product_lines = data.get("product_lines")
     # Validate and fetch journal
-    journal = env["account.journal"].browse(478)
+    journal = env["account.journal"].browse(20)
     if not journal.exists():
         _logger.error("Journal not found")
         return data_response("Journal not found", 404)
